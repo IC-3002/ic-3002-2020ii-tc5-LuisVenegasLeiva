@@ -3,11 +3,30 @@ from big_o import complexities as cmpl
 import gnuplotlib as gp
 import math
 import numpy as np
+import random
 from random import shuffle
 import unittest
 import warnings
 
 from burbuja import burbuja, burbuja_optimizado
+
+def generar_mejor(n):
+    ultimo=1
+    actual=5
+    A = list(range(0,n))
+    for i in range(len(A)):
+        A[i]=random.randint(1,actual)+ultimo
+        ultimo=A[i]
+    return A
+
+def generar_peor(n):
+    ultimo=1
+    actual=5
+    A = list(range(0,n))
+    for i in range(len(A)):
+        A[n-1-i]=random.randint(1,actual)+ultimo
+        ultimo=A[n-1-i]
+    return A
 
 
 def _graficar(fitted, titulo):
@@ -82,12 +101,39 @@ class PruebasBurbuja(unittest.TestCase):
 
 
     def test_mejor_caso(self):
-        self.fail('Pendiente de implementar')
+        print()
+        best, fitted = big_o.big_o(burbuja_optimizado, generar_mejor, min_n=10, max_n=1000,
+                                   n_measures=100, n_repeats=3, verbose=False,
+                                   classes=[cmpl.Linear, cmpl.Quadratic], return_raw_data=True)
+
+        _graficar(fitted, 'Mejor Caso')
+
+        if not isinstance(best, big_o.complexities.Quadratic):
+            warnings.warn(
+                f'Complejidad esperada Cuadrática, complejidad estimada {best}')
 
 
     def test_peor_caso(self):
-        self.fail('Pendiente de implementar')
+        print()
+        best, fitted = big_o.big_o(burbuja_optimizado, generar_peor, min_n=10, max_n=1000,
+                                   n_measures=100, n_repeats=3, verbose=False,
+                                   classes=[cmpl.Linear, cmpl.Quadratic], return_raw_data=True)
+
+        _graficar(fitted, 'Peor Caso')
+
+        if not isinstance(best, big_o.complexities.Quadratic):
+            warnings.warn(
+                f'Complejidad esperada Cuadrática, complejidad estimada {best}')
 
 
     def test_caso_promedio(self):
-        self.fail('Pendiente de implementar')
+        print()
+        best, fitted = big_o.big_o(burbuja_optimizado, generar_aleatorio, min_n=10, max_n=1000,
+                                   n_measures=100, n_repeats=3, verbose=False,
+                                   classes=[cmpl.Linear, cmpl.Quadratic], return_raw_data=True)
+
+        _graficar(fitted, 'Caso Promedio')
+
+        if not isinstance(best, big_o.complexities.Quadratic):
+            warnings.warn(
+                f'Complejidad esperada Cuadrática, complejidad estimada {best}')
